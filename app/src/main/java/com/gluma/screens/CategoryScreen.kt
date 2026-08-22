@@ -22,10 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gluma.data.Category
-import com.gluma.repository.VibeRepository
+import com.gluma.data.VibeRepository
 
 @Composable
-fun CategoryScreen() {
+fun CategoryScreen(onCategorySelected: (String) -> Unit) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -63,7 +63,7 @@ fun CategoryScreen() {
                     CategoryCard(
                         category = category,
                         onClick = {
-                            println("Selected: ${category.name}")
+                            onCategorySelected(category.name)
                         }
                     )
                 }

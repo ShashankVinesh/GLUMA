@@ -1,8 +1,4 @@
-package com.gluma.repository
-
-import com.gluma.data.Category
-import com.gluma.data.Vibe
-
+package com.gluma.data
 
 object VibeRepository {
 
