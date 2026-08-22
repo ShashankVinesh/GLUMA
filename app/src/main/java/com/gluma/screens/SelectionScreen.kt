@@ -1,6 +1,7 @@
 package com.gluma.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.gluma.data.VibeRepository
 
 @Composable
-fun SelectionScreen(categoryName: String) {
+fun SelectionScreen(categoryName: String , onVibeSelected: (String) -> Unit) {
     val vibes = VibeRepository.getVibes(categoryName)
 
     Surface(
@@ -51,6 +52,7 @@ fun SelectionScreen(categoryName: String) {
                             .fillMaxWidth()
                             .aspectRatio(16f / 9f)
                             .background(Color(0xFF1B1B22))
+                            .clickable { onVibeSelected(vibe.id)}
                     ) {
                         Text(
                             text = vibe.name,

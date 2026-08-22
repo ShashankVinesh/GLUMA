@@ -26,5 +26,8 @@ object VibeRepository {
     )
     fun getVibes(category: String): List<Vibe> = vibesByCategory[category].orEmpty()
 
+    fun getVibeById(vibeId: String): Vibe? =
+        vibesByCategory.values.flatten().find { it.id == vibeId }
+
 
 }
