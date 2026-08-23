@@ -5,8 +5,14 @@ import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -154,13 +160,23 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
                     .clickable { onBack() }
             )
 
-            Text(
-                text = vibe?.trackName?: "",
-                color = Color.White,
+            Row(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(20.dp)
-            )
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = vibe?.trackName ?: "",
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = Icons.Filled.MusicNote,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
 
             Text(
                 text = vibe?.quote ?: "",

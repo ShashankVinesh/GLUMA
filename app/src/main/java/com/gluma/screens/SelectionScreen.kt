@@ -39,11 +39,13 @@ import androidx.compose.ui.unit.dp
 import com.gluma.data.FavoritesRepository
 import com.gluma.data.Vibe
 import com.gluma.data.VibeRepository
+import com.gluma.ui.theme.paletteFor
 import kotlinx.coroutines.launch
 
 @Composable
 fun SelectionScreen(categoryName: String, onVibeSelected: (String) -> Unit) {
     val vibes = remember { VibeRepository.getVibes(categoryName) }
+    val palette = remember(categoryName) { paletteFor(categoryName) }
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -65,8 +67,7 @@ fun SelectionScreen(categoryName: String, onVibeSelected: (String) -> Unit) {
             Text(
                 text = categoryName,
                 style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = palette.accent
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -82,8 +83,7 @@ fun SelectionScreen(categoryName: String, onVibeSelected: (String) -> Unit) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
                             text = "★ Favorites",
-                            color = Color(0xFFFFD54F),
-                            fontWeight = FontWeight.SemiBold,
+                            color = palette.accent,
                             style = MaterialTheme.typography.titleSmall
                         )
                     }
@@ -92,6 +92,7 @@ fun SelectionScreen(categoryName: String, onVibeSelected: (String) -> Unit) {
                         VibeCard(
                             vibe = vibe,
                             isFavorite = true,
+                            accent = palette.accent,
                             onClick = { onVibeSelected(vibe.id) },
                             onToggleFavorite = {
                                 scope.launch { FavoritesRepository.toggleFavorite(context, vibe.id) }
@@ -102,8 +103,7 @@ fun SelectionScreen(categoryName: String, onVibeSelected: (String) -> Unit) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
                             text = "All Vibes",
-                            color = Color.LightGray,
-                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFFB8B8B8),
                             style = MaterialTheme.typography.titleSmall,
                             modifier = Modifier.padding(top = 8.dp)
                         )
@@ -114,6 +114,7 @@ fun SelectionScreen(categoryName: String, onVibeSelected: (String) -> Unit) {
                     VibeCard(
                         vibe = vibe,
                         isFavorite = false,
+                        accent = palette.accent,
                         onClick = { onVibeSelected(vibe.id) },
                         onToggleFavorite = {
                             scope.launch { FavoritesRepository.toggleFavorite(context, vibe.id) }
@@ -129,6 +130,7 @@ fun SelectionScreen(categoryName: String, onVibeSelected: (String) -> Unit) {
 private fun VibeCard(
     vibe: Vibe,
     isFavorite: Boolean,
+    accent: Color,
     onClick: () -> Unit,
     onToggleFavorite: () -> Unit
 ) {
@@ -136,7 +138,6 @@ private fun VibeCard(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(16f / 9f)
-            .background(Color(0xFF1B1B22))
             .clickable { onClick() }
     ) {
         Image(
@@ -151,7 +152,7 @@ private fun VibeCard(
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f)),
+                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)),
                         startY = 100f
                     )
                 )
@@ -159,8 +160,8 @@ private fun VibeCard(
 
         Text(
             text = vibe.name,
-            color = Color.White,
-            fontWeight = FontWeight.SemiBold,
+            color = Color(0xFFF5F0E8),
+            style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(12.dp)
@@ -168,7 +169,7 @@ private fun VibeCard(
 
         Text(
             text = if (isFavorite) "★" else "☆",
-            color = if (isFavorite) Color(0xFFFFD54F) else Color.White,
+            color = if (isFavorite) accent else Color.White,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .align(Alignment.TopEnd)

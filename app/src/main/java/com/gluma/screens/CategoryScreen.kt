@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gluma.data.Category
 import com.gluma.data.VibeRepository
+import com.gluma.ui.theme.paletteFor
 
 @Composable
 fun CategoryScreen(onCategorySelected: (String) -> Unit) {
@@ -79,24 +80,26 @@ fun CategoryCard(
     category: Category,
     onClick: () -> Unit
 ) {
+    val palette = paletteFor(category.name)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .background(color = Color(0xFF1B1B22))
+            .background(color = palette.base)
             .padding(vertical = 40.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = category.emoji,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.displaySmall.copy(fontFamily = null, fontStyle = null)
             )
             Text(
                 text = category.name,
                 modifier = Modifier.padding(top = 10.dp),
-                color = Color.White,
-                fontWeight = FontWeight.SemiBold
+                color = palette.accent,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }

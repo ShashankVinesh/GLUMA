@@ -30,13 +30,16 @@ import androidx.compose.ui.unit.dp
 import com.gluma.navigation.GlumaNavHost
 import com.gluma.screens.CategoryScreen
 import com.gluma.ui.theme.GLUMATheme
+import com.gluma.ui.theme.GlumaTypography
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            GLUMATheme {
+            MaterialTheme(
+                typography = GlumaTypography
+            ) {
                 GlumaNavHost()
             }
         }

@@ -52,7 +52,7 @@ fun GLUMATheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = GlumaTypography,
         content = content
     )
 }
