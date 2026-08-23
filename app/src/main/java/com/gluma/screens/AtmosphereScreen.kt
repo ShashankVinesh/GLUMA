@@ -38,10 +38,7 @@ import com.gluma.utils.findActivity
 @OptIn(UnstableApi::class)
 @Composable
 fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
-    var vibe by remember { mutableStateOf<Vibe?>(null) }
-    LaunchedEffect(vibeId) {
-        vibe = VibeRepository.getVibeById(vibeId)
-    }
+    val vibe = remember { VibeRepository.getVibeById(vibeId) }
     val context = LocalContext.current
     val activity = context.findActivity()
 

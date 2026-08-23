@@ -1,7 +1,6 @@
 package com.gluma.data
 
 import com.gluma.R
-import io.github.jan.supabase.postgrest.postgrest
 
 object VibeRepository {
 
@@ -14,54 +13,23 @@ object VibeRepository {
         Category("CyberPunk", "⚡")
     )
 
-    // Local-only data: which vibe ids exist, which category they belong to,
-    // and which local raw resources they use for video/audio.
-    private data class LocalVibeAssets(
-        val id: String,
-        val category: String,
-        val backgroundRes: Int,
-        val trackRes: Int
-    )
+    val vibesByCategory = mapOf(
 
-    private val localAssets = listOf(
-
-        LocalVibeAssets("rainy_korea", "Nature", R.raw.rainy_korea, R.raw.still_with_you),
-
-    )
-
-    private var cachedVibes: List<Vibe>? = null
-
-    private suspend fun loadAllVibes(): List<Vibe> {
-        cachedVibes?.let { return it }
-
-        val remoteInfoList = SupabaseClient.client
-            .postgrest
-            .from("vibes")
-            .select()
-            .decodeList<RemoteVibeInfo>()
-
-        val merged = localAssets.mapNotNull { local ->
-            val remote = remoteInfoList.find { it.vibe_id == local.id } ?: return@mapNotNull null
+        "Nature" to listOf(
             Vibe(
-                id = local.id,
-                backgroundRes = local.backgroundRes,
-                trackRes = local.trackRes,
-                name = remote.name,
-                quote = remote.quote,
-                trackName = remote.track_name,
-                thumbnailUrl = remote.thumbnail_url
+                id = "rainy_korea",
+                name = "Rainy Korea",
+                backgroundRes = R.raw.rainy_korea,
+                trackRes = R.raw.still_with_you,
+                thumbnailRes = R.raw.rainy_korea_thumbnail,
+                quote = "Everything is gonna be alright.",
+                trackName = "Still With You"
             )
-        }
+        )
+    )
 
-        cachedVibes = merged
-        return merged
-    }
+    fun getVibes(category: String): List<Vibe> = vibesByCategory[category].orEmpty()
 
-    suspend fun getVibes(category: String): List<Vibe> =
-        loadAllVibes().filter { vibe ->
-            localAssets.find { it.id == vibe.id }?.category == category
-        }
-
-    suspend fun getVibeById(vibeId: String): Vibe? =
-        loadAllVibes().find { it.id == vibeId }
+    fun getVibeById(vibeId: String): Vibe? =
+        vibesByCategory.values.flatten().find { it.id == vibeId }
 }
