@@ -1,5 +1,7 @@
 package com.gluma.data
 
+import com.gluma.R
+
 object VibeRepository {
 
     val categories = listOf(
@@ -11,17 +13,11 @@ object VibeRepository {
         Category("CyberPunk", "⚡")
     )
     val vibesByCategory = mapOf(
-        "Anime" to listOf(
-            Vibe("frieren", "Frieren", "https://example.com/frieren.jpg"),
-            Vibe("cowboy_bebop", "Cowboy Bebop", "https://example.com/bebop.jpg")
-        ),
+
         "Nature" to listOf(
-            Vibe("rainy_korea", "Rainy Korea",  "https://example.com/rainy_korea.jpg"),
-            Vibe("misty_forest", "Misty Forest", "https://example.com/forest.jpg")
+            Vibe("rainy_korea", "Rainy Korea",  R.raw.rainy_korea , "Rainy Korea" , "Still With You"),
         ),
-        "Space" to listOf(
-            Vibe("nebula", "Nebula Drift",  "https://example.com/nebula.jpg")
-        )
+
 
     )
     fun getVibes(category: String): List<Vibe> = vibesByCategory[category].orEmpty()
