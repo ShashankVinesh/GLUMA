@@ -3,23 +3,24 @@ package com.gluma.screens
 import android.content.pm.ActivityInfo
 import android.view.ViewGroup
 import androidx.annotation.OptIn
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
@@ -30,13 +31,17 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import com.gluma.data.Vibe
 import com.gluma.data.VibeRepository
 import com.gluma.utils.findActivity
 
 @OptIn(UnstableApi::class)
 @Composable
 fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
-    val vibe = VibeRepository.getVibeById(vibeId)
+    var vibe by remember { mutableStateOf<Vibe?>(null) }
+    LaunchedEffect(vibeId) {
+        vibe = VibeRepository.getVibeById(vibeId)
+    }
     val context = LocalContext.current
     val activity = context.findActivity()
 
@@ -95,7 +100,7 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
                 val videoPlayer = remember {
                     ExoPlayer.Builder(context).build().apply {
                         setMediaItem(
-                            MediaItem.fromUri("android.resource://${context.packageName}/${vibe.backgroundRes}")
+                            MediaItem.fromUri("android.resource://${context.packageName}/${vibe!!.backgroundRes}")
                         )
                         repeatMode = ExoPlayer.REPEAT_MODE_ONE
                         volume = 0f
@@ -108,7 +113,7 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
                 val audioPlayer = remember {
                     ExoPlayer.Builder(context).build().apply {
                         setMediaItem(
-                            MediaItem.fromUri("android.resource://${context.packageName}/${vibe.trackRes}")
+                            MediaItem.fromUri("android.resource://${context.packageName}/${vibe!!.trackRes}")
                         )
                         repeatMode = ExoPlayer.REPEAT_MODE_ONE
                         prepare()

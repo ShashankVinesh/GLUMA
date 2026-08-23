@@ -1,5 +1,6 @@
 package com.gluma.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gluma.data.Category
@@ -26,6 +28,9 @@ import com.gluma.data.VibeRepository
 
 @Composable
 fun CategoryScreen(onCategorySelected: (String) -> Unit) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val columns = if (isLandscape) 3 else 2
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -52,19 +57,16 @@ fun CategoryScreen(onCategorySelected: (String) -> Unit) {
             )
 
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+                columns = GridCells.Fixed(columns),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 items(VibeRepository.categories) { category ->
-
                     CategoryCard(
                         category = category,
-                        onClick = {
-                            onCategorySelected(category.name)
-                        }
+                        onClick = { onCategorySelected(category.name) }
                     )
                 }
             }
@@ -81,21 +83,15 @@ fun CategoryCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .background(
-                color = Color(0xFF1B1B22)
-            )
+            .background(color = Color(0xFF1B1B22))
             .padding(vertical = 40.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = category.emoji,
                 style = MaterialTheme.typography.displaySmall
             )
-
             Text(
                 text = category.name,
                 modifier = Modifier.padding(top = 10.dp),

@@ -3,10 +3,10 @@ package com.gluma.data
 data class Vibe(
 
     val id: String,
+    val backgroundRes: Int,
+    val trackRes: Int,
     val name: String,
-    val backgroundRes: Int ,
-    val quote : String,
+    val quote: String,
     val trackName: String,
-    val trackRes: Int
-
+    val thumbnailUrl: String
 )
