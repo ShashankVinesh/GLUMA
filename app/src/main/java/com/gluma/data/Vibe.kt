@@ -6,6 +6,7 @@ data class Vibe(
     val name: String,
     val backgroundRes: Int ,
     val quote : String,
-    val trackName: String
+    val trackName: String,
+    val trackRes: Int
 
 )

@@ -15,7 +15,7 @@ object VibeRepository {
     val vibesByCategory = mapOf(
 
         "Nature" to listOf(
-            Vibe("rainy_korea", "Rainy Korea",  R.raw.rainy_korea , "Rainy Korea" , "Still With You"),
+            Vibe("rainy_korea", "Rainy Korea",  R.raw.rainy_korea , "Rainy Korea" , "Still With You" , R.raw.still_with_you )
         ),
 
 

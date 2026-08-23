@@ -91,12 +91,12 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
         Box(modifier = Modifier.fillMaxSize()) {
 
             if (vibe != null) {
-                val exoPlayer = remember {
+                // Background video — muted, looping
+                val videoPlayer = remember {
                     ExoPlayer.Builder(context).build().apply {
-                        val mediaItem = MediaItem.fromUri(
-                            "android.resource://${context.packageName}/${vibe.backgroundRes}"
+                        setMediaItem(
+                            MediaItem.fromUri("android.resource://${context.packageName}/${vibe.backgroundRes}")
                         )
-                        setMediaItem(mediaItem)
                         repeatMode = ExoPlayer.REPEAT_MODE_ONE
                         volume = 0f
                         prepare()
@@ -104,14 +104,29 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
                     }
                 }
 
+                // Music — audible, looping, independent of the video
+                val audioPlayer = remember {
+                    ExoPlayer.Builder(context).build().apply {
+                        setMediaItem(
+                            MediaItem.fromUri("android.resource://${context.packageName}/${vibe.trackRes}")
+                        )
+                        repeatMode = ExoPlayer.REPEAT_MODE_ONE
+                        prepare()
+                        playWhenReady = true
+                    }
+                }
+
                 DisposableEffect(Unit) {
-                    onDispose { exoPlayer.release() }
+                    onDispose {
+                        videoPlayer.release()
+                        audioPlayer.release()
+                    }
                 }
 
                 AndroidView(
                     factory = {
                         PlayerView(context).apply {
-                            player = exoPlayer
+                            player = videoPlayer
                             useController = false
                             resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                             layoutParams = ViewGroup.LayoutParams(
