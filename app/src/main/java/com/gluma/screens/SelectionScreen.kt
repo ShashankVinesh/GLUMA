@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.gluma.data.FavoritesRepository
 import com.gluma.data.Vibe
 import com.gluma.data.VibeRepository
@@ -207,7 +208,10 @@ private fun VibeCard(
             )
     ) {
         AsyncImage(
-            model = vibe.thumbnailUrl,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(vibe.thumbnailUrl)
+                .crossfade(true)
+                .build(),
             contentDescription = vibe.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()

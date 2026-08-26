@@ -3,13 +3,27 @@ package com.gluma.screens
 import android.content.pm.ActivityInfo
 import android.view.ViewGroup
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.Icon
@@ -25,14 +39,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -40,11 +57,15 @@ import androidx.media3.ui.PlayerView
 import com.gluma.data.Vibe
 import com.gluma.data.VibeRepository
 import com.gluma.utils.findActivity
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(UnstableApi::class)
 @Composable
 fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
     val vibe = remember { VibeRepository.getVibeById(vibeId) }
+    var isVideoReady by remember { mutableStateOf(false) }
+    var bufferedPercent by remember { mutableStateOf(0) }
     val context = LocalContext.current
     val activity = context.findActivity()
 
@@ -99,16 +120,28 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
         Box(modifier = Modifier.fillMaxSize()) {
 
             if (vibe != null) {
-                // Background video — muted, looping
                 val videoPlayer = remember {
                     ExoPlayer.Builder(context).build().apply {
-                        setMediaItem(
-                            MediaItem.fromUri(vibe.backgroundUrl)
-                        )
+                        setMediaItem(MediaItem.fromUri(vibe.backgroundUrl))
                         repeatMode = ExoPlayer.REPEAT_MODE_ONE
                         volume = 0f
+                        addListener(object : Player.Listener {
+                            override fun onPlaybackStateChanged(state: Int) {
+                                if (state == Player.STATE_READY) {
+                                    isVideoReady = true
+                                }
+                            }
+                        })
                         prepare()
                         playWhenReady = true
+                    }
+
+                }
+
+                LaunchedEffect(isVideoReady) {
+                    while (!isVideoReady) {
+                        bufferedPercent = videoPlayer.bufferedPercentage
+                        delay(150.milliseconds)
                     }
                 }
 
@@ -148,6 +181,25 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
                     },
                     modifier = Modifier.fillMaxSize()
                 )
+
+                AnimatedVisibility(
+                    visible = !isVideoReady,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color(0xFF101014)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        BreathingLoader(
+                            accent = Color(0xFFE8C97A),
+                            percent = bufferedPercent
+                        )
+                    }
+                }
             }
 
             Text(
@@ -187,5 +239,58 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
                     .padding(20.dp)
             )
         }
+    }
+}
+
+@Composable
+private fun BreathingLoader(accent: Color, percent: Int) {
+    val infiniteTransition = rememberInfiniteTransition(label = "breathing")
+
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 0.85f,
+        targetValue = 1.15f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1600, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "scale"
+    )
+
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0.35f,
+        targetValue = 0.9f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1600, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha"
+    )
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier
+                .size(72.dp)
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .background(accent.copy(alpha = alpha), shape = CircleShape)
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Settling into the mood…",
+            color = Color(0xFFF5F0E8),
+            fontSize = 16.sp
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "$percent%",
+            color = accent,
+            fontSize = 13.sp
+        )
     }
 }
