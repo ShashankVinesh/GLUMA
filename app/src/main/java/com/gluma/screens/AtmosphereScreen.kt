@@ -103,7 +103,7 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
                 val videoPlayer = remember {
                     ExoPlayer.Builder(context).build().apply {
                         setMediaItem(
-                            MediaItem.fromUri("android.resource://${context.packageName}/${vibe!!.backgroundRes}")
+                            MediaItem.fromUri(vibe.backgroundUrl)
                         )
                         repeatMode = ExoPlayer.REPEAT_MODE_ONE
                         volume = 0f
@@ -116,7 +116,7 @@ fun AtmosphereScreen(vibeId: String, onBack: () -> Unit) {
                 val audioPlayer = remember {
                     ExoPlayer.Builder(context).build().apply {
                         setMediaItem(
-                            MediaItem.fromUri("android.resource://${context.packageName}/${vibe!!.trackRes}")
+                            MediaItem.fromUri("android.resource://${context.packageName}/${vibe.trackRes}")
                         )
                         repeatMode = ExoPlayer.REPEAT_MODE_ONE
                         prepare()
