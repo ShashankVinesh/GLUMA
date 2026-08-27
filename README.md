@@ -28,23 +28,13 @@ Vibe is built around those moments.
 
 ---
 
-A selected vibe can change:
+Features:
 
-* 🌄 Background
-* 🎵 Music
-* 💬 Quote
-* 🎨 Color palette
+* 🌄 Animated Background
+* 🎵 Music 
+* 💬 Quote's
 * 📱 Screen orientation
 * ✨ Visual effects
-
----
-
-## 🚧 Current Status
-
-**Early development**
-
-The project is currently being built as part of my Learn-by-Building journey with Hack Club's Stardance.
-
 
 ---
 
@@ -57,21 +47,15 @@ The project is currently being built as part of my Learn-by-Building journey wit
 * Android Media3
 * Git & GitHub
 
-More technologies will be added as the project evolves.
-
 ---
+## Ai use - 
+I used AI for pretty much code writing tasks , explaining things and for 
+new things that I wouldn't know before.
 
-## 🎯 Project Goal
-
-This project is also my way of learning Android by actually building something.
-
-Instead of learning every technology beforehand, I'll learn what I need when the project requires it.
-
----
 
 ## 📸 Screenshots
 
-*Screenshots will be added as development progresses.*
+![Home](GlumaSS.jpeg)
 
 
 See [LICENSE](LICENSE) for details.
